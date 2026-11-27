@@ -1,5 +1,17 @@
+GITBOOK ?= gitbook
+
+.PHONY: build serve refine package
+
+build:
+	$(GITBOOK) build
+	$(MAKE) refine
+
 serve:
-	gitbook serve --log=debug --debug --no-live
+	$(GITBOOK) serve --log=debug --debug --no-live
+
 refine:
 	python3 scripts/subdirectory_summary.py --site-dir .
-	cp _book/assets/favicon.ico _book/gitbook/images/favicon.ico
+	python3 scripts/language_layout.py
+
+package: build
+	tar -czf book.tar.gz -C .build _book
